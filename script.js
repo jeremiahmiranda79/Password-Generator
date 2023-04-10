@@ -2,17 +2,13 @@ var password = {
   minCharacter: 8,
   maxCharacter: 128,
   length: 0,
-
   characterResults: [],
-
   passwordArray: [],
-
   islowercaseUsed: false,
   isUppercaseUsed: false,
   isNumericUsed: false,
   isSpecialCharacterUsed: false,
-
-  isUsedCounter: 0
+  characterUsedCount: 0
 };
 
 var character = {
@@ -23,16 +19,15 @@ var character = {
   isLowercase: false,
   isUppercase: false,
   isNumeric: false,
-  isSpecialCharacter: false
+  isSpecialCharacter: false,
 };
 
+// starts the program
 start();
 
 function start() {
     getUserInput();
-
     fillRandomCharactersNeededForPassword();
-
     generatePassword();
     showGeneratedPassword()
 }
@@ -45,6 +40,7 @@ function getUserInput()
   function getPasswordLengthFromUser() {
     password.length = prompt('Please enter the lenght of the password, between 8 and 128 characters.');
   
+    // validates the password length 
     if (password.length >= password.minCharacter && password.length <= password.maxCharacter) {
       getCharacterRequirementsFromUser()
     } else {
@@ -54,12 +50,12 @@ function getUserInput()
   }
 
   function getCharacterRequirementsFromUser() {
-    character.isLowercase = confirm('Would you like lowercase letter?');
+    character.isLowercase = confirm('Would you like lowercase letters?');
     character.isUppercase = confirm('Would you like uppercase letters?');
     character.isNumeric = confirm('Would you like numbers?');
     character.isSpecialCharacter = confirm('Would you like special characters?');
   
-    // validation that user chooses 1 character atleast
+    // validates that the user chooses atleast 1 character type
     if (!character.isLowercase && !character.isUppercase && !character.isNumeric && !character.isSpecialCharacter) {
       alert('ERROR: "Please choose at least 1 character type!"')
       getCharacterRequirementsFromUser();
@@ -85,70 +81,43 @@ function getUserInput()
   }
 }
 
-//TODO make sure the different chars are used atleast 1x
 function fillRandomCharactersNeededForPassword() { 
   for (var i = 0; i < password.length; i++) {
-    // Validate that we use all characers
-    
     checkForCharacterTypes();
-
-    // if (password.isUsedCounter >= password.characterResults.lenght) {
-    //   resetIsUsedBooleans();
-    // }
-    // else {
-    //   checkForCharacterTypes();
-    // }
   }
 }
-
-var count = 0;
 
 function checkForCharacterTypes() {
-  var char = findTheCharactersForThePassword();
-  count++;
-  console.log(count);
+  var char = findRandomCharType();
 
-  if (!password.islowercaseUsed) {
-    if (char === "lowercase") {
+  // validates that each selected character type is used atleast once in the password output
+  if (password.characterUsedCount < password.characterResults.length) {
+    if (char === "lowercase" && !password.islowercaseUsed)
+    {
       password.passwordArray.push(findRandomChar(character.lowercases));
       password.islowercaseUsed = true;
-      password.isUsedCounter++
-      console.log("lower")
-      console.log(password.isUsedCounter);
-    }
-  } else if (!password.isUppercaseUsed) {
-    if (char === "uppercase") {
+      password.characterUsedCount++;
+    } else if (char === "uppercase" && !password.isUppercaseUsed) {
       password.passwordArray.push(findRandomChar(character.uppercases));
       password.isUppercaseUsed = true;
-      password.isUsedCounter++;
-      console.log("upper");
-      console.log(password.isUsedCounter);
-    }
-    
-  } else if (!password.isNumericUsed ) {
-    if (char === "numeric") {
+      password.characterUsedCount++;
+    } else if (char === "numeric" && !password.isNumericUsed) {
       password.passwordArray.push(findRandomChar(character.numerics));
       password.isNumericUsed = true;
-      password.isUsedCounter++;
-      console.log("numeric");
-      console.log(password.isUsedCounter);
-    }
-    
-  } else if (!password.isSpecialCharacterUsed ) { 
-    if (char === "special") {
+      password.characterUsedCount++;
+    } else if (char === "special" && !password.isSpecialCharacterUsed) {
       password.passwordArray.push(findRandomChar(character.specialCharacters));
       password.isSpecialCharacterUsed = true;
-      password.isUsedCounter++;
-      console.log("special");
-      console.log(password.isUsedCounter);
+      password.characterUsedCount++;
+    } else {
+      checkForCharacterTypes();
     }
-  }
-  else {
+  } else {
     resetIsUsedBooleans();
-  }
+  } 
 }
 
-function findTheCharactersForThePassword() {
+function findRandomCharType() {
   var result = Math.floor(Math.random() * password.characterResults.length);
   return password.characterResults[result];
 }
@@ -159,16 +128,13 @@ function findRandomChar(arr) {
 }
 
 function resetIsUsedBooleans() {
-  console.log("reset");
-  for (var i = 0; i < password.characterResults.length; i++) {
-    password.characterResults[i] = false;
-    console.log(password.characterResults[i]);
-  }
+  password.islowercaseUsed = false;
+  password.isUppercaseUsed = false;
+  password.isNumericUsed = false;
+  password.isSpecialCharacterUsed = false;
+  password.characterUsedCount = 0;
+  checkForCharacterTypes();
 }
-
-
-
-
 
 function convertThePasswordCharacterArrayToAString() {
   return passwordString = password.passwordArray.join("");
