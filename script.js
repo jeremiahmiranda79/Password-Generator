@@ -22,14 +22,11 @@ var character = {
   isSpecialCharacter: false,
 };
 
-// starts the program
-start();
-
 function start() {
     getUserInput();
     fillRandomCharactersNeededForPassword();
     generatePassword();
-    showGeneratedPassword()
+    writePasswordToPasswordInput()
 }
 
 function getUserInput()
@@ -144,13 +141,13 @@ function generatePassword() {
    return convertThePasswordCharacterArrayToAString();
 }
 
-function showGeneratedPassword() {
-  var generateBtn = document.querySelector("#generate");
-  generateBtn.addEventListener("click", writePasswordToPasswordInput);
-}
-
 function writePasswordToPasswordInput() {
   var password = generatePassword();
   var passwordText = document.querySelector("#password");
   passwordText.value = password;
 }
+
+// Get references to the #generate element
+var generateBtn = document.querySelector('#generate');
+// Add event listener to generate button
+generateBtn.addEventListener('click', start);
